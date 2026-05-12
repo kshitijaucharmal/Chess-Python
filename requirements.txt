@@ -1,0 +1,4 @@
+pygame
+numpy
+tqdm
+pygame_gui
