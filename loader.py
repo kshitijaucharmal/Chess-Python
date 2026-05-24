@@ -1,4 +1,11 @@
 import pygame
+from constants import *
+
+BOARD_TYPE = "8_bit"
+PIECES_TYPE = "cases"
+
+SIZE = 800
+TILE_SIZE = SIZE // 8
 
 def load_board(board_type, width, height):
     board = pygame.image.load("chess.com-boards-and-pieces/boards/" + board_type + ".png")
@@ -13,6 +20,6 @@ def load_pieces(piece_type, size):
         pieces[name] = pygame.transform.smoothscale(pieces[name], (size, size))
     
     return pieces
-    pass
 
-    
+PIECE_IMAGES = load_pieces(PIECES_TYPE, TILE_SIZE)
+board = load_board(BOARD_TYPE, SIZE, SIZE)
