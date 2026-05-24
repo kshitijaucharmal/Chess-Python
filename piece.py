@@ -1,4 +1,7 @@
+from pprint import pprint
+
 import pygame
+
 from loader import PIECE_IMAGES, TILE_SIZE
 
 class Piece:
@@ -11,7 +14,17 @@ class Piece:
         self.piece_name = None
         self.selected = False
         self.white = True
-
+        
+        self.valid_moves = []
+        pass
+    
+    def calculate_valid_moves(self, board):
+        for i in range(8):
+            for j in range(8):
+                if not board.chessboard[i][j].initialized:
+                    self.valid_moves.append([i, j])
+        pass
+    
     def init(self, piece_name, x, y):
         self.initialized = True
         self.piece_name = piece_name

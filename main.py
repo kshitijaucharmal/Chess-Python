@@ -1,3 +1,5 @@
+from typing import Self
+
 import pygame
 import pygame_gui
 from pygame_gui.elements import UIProgressBar, UILabel
@@ -27,8 +29,6 @@ bar = UIProgressBar(
 bar.status_percentage = 0.75
 
 board = BoardManager()
-board.load_position()
-selected = None
 
 while run:
     time_delta = clock.tick(60) / 1000.0
@@ -39,7 +39,11 @@ while run:
         x = mouse_pos[0] // TILE_SIZE
         y = mouse_pos[1] // TILE_SIZE
 
-        inside_board = 0 < x < 8 and 0 < y < 8
+        inside_board = 0 <= x < 8 and 0 <= y < 8
+        
+        if inside_board:
+            board.mousex = x
+            board.mousey = y
 
         file = chr(x + ord('a'))
         rank = str(8 - y)
@@ -50,30 +54,11 @@ while run:
         if event.type == pygame.MOUSEBUTTONDOWN:
             # Left click (Start Selecting)
             if event.button == 1 and inside_board:
-                if selected is None:
-                    if board.white_turn == board.chessboard[x][y].white:
-                        board.chessboard[x][y].select()
-                        selected = board.chessboard[x][y]
-                        board.white_turn = not board.white_turn
+                board.start_selecting()
 
         if event.type == pygame.MOUSEBUTTONUP:
             if event.button == 1 and inside_board:
-                if selected is not None:
-                    # Nothing on the square
-                    if not board.chessboard[x][y].initialized and selected.piece_name is not None:
-                        board.chessboard[x][y].init(selected.piece_name, x * TILE_SIZE, y * TILE_SIZE)
-                        selected.deinit()
-                    else:
-                        # Own piece
-                        if board.chessboard[x][y].white == selected.white:
-                            selected.unselect()
-                        # Capture
-                        else:
-                            board.chessboard[x][y].deinit()
-                            board.chessboard[x][y].init(selected.piece_name, x * TILE_SIZE, y * TILE_SIZE)
-                            selected.deinit()
-
-                    selected = None
+                board.move_piece()
 
         # UI Events
         status_bar.set_text("White to move" if board.white_turn else "Black to move")
