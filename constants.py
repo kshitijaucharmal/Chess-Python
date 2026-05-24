@@ -1,7 +1,7 @@
 # Constants ----------------------------------------
 
-BOARD_TYPE = "8_bit"
-PIECES_TYPE = "cases"
+BOARD_TYPE = "red"
+PIECES_TYPE = "neo_wood"
 
 SIZE = 800
 TILE_SIZE = SIZE // 8
@@ -17,6 +17,5 @@ FEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
 # FEN = '1r6/5pp1/R1R4p/1r1pP3/2pkQPP1/7P/1P6/2K5 w - - 0 41'
 
 # Colors
-BACKGROUND = (48, 46, 43)
-
+BACKGROUND = (38, 36, 33)
 # Constants ----------------------------------------

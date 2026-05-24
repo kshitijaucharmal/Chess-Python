@@ -1,12 +1,8 @@
-from pprint import pprint
-
 import pygame
 import pygame_gui
-from pygame_gui.elements import UIProgressBar
-from piece import Piece
+from pygame_gui.elements import UIProgressBar, UILabel
 
-from loader import board
-from fen_loader import generate_board_from_fen
+from board_manager import BoardManager
 from constants import *
 
 pygame.init()
@@ -19,11 +15,10 @@ manager = pygame_gui.UIManager((SCREEN_WIDTH, SCREEN_HEIGHT), theme_path="theme.
 clock = pygame.time.Clock()
 run = True
 
-position = generate_board_from_fen(FEN)
-
 hello_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((SIZE, 0), (100, 50)),
                                             text='Say Hello',
                                             manager=manager)
+status_bar = UILabel(relative_rect=pygame.Rect((SIZE, SCREEN_HEIGHT-50), (SCREEN_WIDTH - SIZE, 50)),manager=manager, text="Game Started")
 
 bar = UIProgressBar(
     relative_rect=pygame.Rect(SIZE, 50, 300, 30),
@@ -31,30 +26,8 @@ bar = UIProgressBar(
 )
 bar.status_percentage = 0.75
 
-def draw_grid(screen):
-    screen.blit(board, (START_X, START_Y))
-
-chessboard = [[Piece() for i in range(8)] for j in range(8)]
-
-def load_position():
-    for i in range(len(position)):
-        piece = position[i]
-
-        x = START_X + (i % 8) * TILE_SIZE
-        y = START_Y + (i // 8) * TILE_SIZE
-
-        if piece == 'x':
-            continue
-
-        chessboard[i % 8][i // 8].init(piece, x, y)
-    pass
-
-def draw_pieces(screen):
-    for i in range(8):
-        for j in range(8):
-            chessboard[i][j].show(screen)
-
-load_position()
+board = BoardManager()
+board.load_position()
 selected = None
 
 while run:
@@ -66,6 +39,8 @@ while run:
         x = mouse_pos[0] // TILE_SIZE
         y = mouse_pos[1] // TILE_SIZE
 
+        inside_board = 0 < x < 8 and 0 < y < 8
+
         file = chr(x + ord('a'))
         rank = str(8 - y)
 
@@ -73,32 +48,35 @@ while run:
             run = False
 
         if event.type == pygame.MOUSEBUTTONDOWN:
-            # Left click
-            if event.button == 1:
+            # Left click (Start Selecting)
+            if event.button == 1 and inside_board:
                 if selected is None:
-                    chessboard[x][y].select()
-                    selected = chessboard[x][y]
+                    if board.white_turn == board.chessboard[x][y].white:
+                        board.chessboard[x][y].select()
+                        selected = board.chessboard[x][y]
+                        board.white_turn = not board.white_turn
 
         if event.type == pygame.MOUSEBUTTONUP:
-            if event.button == 1:
+            if event.button == 1 and inside_board:
                 if selected is not None:
                     # Nothing on the square
-                    if not chessboard[x][y].initialized and selected.piece_name is not None:
-                        chessboard[x][y].init(selected.piece_name, x * TILE_SIZE, y * TILE_SIZE)
+                    if not board.chessboard[x][y].initialized and selected.piece_name is not None:
+                        board.chessboard[x][y].init(selected.piece_name, x * TILE_SIZE, y * TILE_SIZE)
                         selected.deinit()
                     else:
                         # Own piece
-                        if chessboard[x][y].white == selected.white:
+                        if board.chessboard[x][y].white == selected.white:
                             selected.unselect()
                         # Capture
                         else:
-                            chessboard[x][y].deinit()
-                            chessboard[x][y].init(selected.piece_name, x * TILE_SIZE, y * TILE_SIZE)
+                            board.chessboard[x][y].deinit()
+                            board.chessboard[x][y].init(selected.piece_name, x * TILE_SIZE, y * TILE_SIZE)
                             selected.deinit()
 
                     selected = None
 
         # UI Events
+        status_bar.set_text("White to move" if board.white_turn else "Black to move")
         manager.process_events(event)
 
         if event.type == pygame_gui.UI_BUTTON_PRESSED:
@@ -107,16 +85,12 @@ while run:
 
 
     # Continuous uodating
-    for i in range(8):
-        for j in range(8):
-            chessboard[i][j].update(mouse_pos)
-
+    board.update(mouse_pos)
     manager.update(time_delta)
 
     screen.fill(BACKGROUND)
-    
-    draw_grid(screen)
-    draw_pieces(screen)
+
+    board.draw(screen)
     manager.draw_ui(screen)
 
     pygame.display.update()
