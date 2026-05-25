@@ -48,7 +48,8 @@ class Piece:
 
                     if 1 <= nx <= 8 and 1 <= ny <= 8:
                         if board.chessboard[nx-1][8-ny].initialized:
-                            self.valid_moves.append([nx, ny])
+                            if board.chessboard[nx - 1][8 - ny].white != self.white:
+                                self.valid_moves.append([nx, ny])
                             break
                         self.valid_moves.append([nx, ny])
         if self.piece_name[1] == 'k':
@@ -66,7 +67,8 @@ class Piece:
 
                 if 1 <= nx <= 8 and 1 <= ny <= 8:
                     if board.chessboard[nx - 1][8 - ny].initialized:
-                        self.valid_moves.append([nx, ny])
+                        if board.chessboard[nx - 1][8 - ny].white != self.white:
+                            self.valid_moves.append([nx, ny])
                         continue
                     self.valid_moves.append([nx, ny])
         if self.piece_name[1] == 'q':
@@ -85,7 +87,8 @@ class Piece:
 
                     if 1 <= nx <= 8 and 1 <= ny <= 8:
                         if board.chessboard[nx-1][8-ny].initialized:
-                            self.valid_moves.append([nx, ny])
+                            if board.chessboard[nx - 1][8 - ny].white != self.white:
+                                self.valid_moves.append([nx, ny])
                             break
                         self.valid_moves.append([nx, ny])
         if self.piece_name[1] == 'r':
@@ -103,7 +106,8 @@ class Piece:
 
                     if 1 <= nx <= 8 and 1 <= ny <= 8:
                         if board.chessboard[nx-1][8-ny].initialized:
-                            self.valid_moves.append([nx, ny])
+                            if board.chessboard[nx - 1][8 - ny].white != self.white:
+                                self.valid_moves.append([nx, ny])
                             break
                         self.valid_moves.append([nx, ny])
 
@@ -122,7 +126,8 @@ class Piece:
 
                 if 1 <= nx <= 8 and 1 <= ny <= 8:
                     if board.chessboard[nx - 1][8 - ny].initialized:
-                        self.valid_moves.append([nx, ny])
+                        if board.chessboard[nx - 1][8 - ny].white != self.white:
+                            self.valid_moves.append([nx, ny])
                         continue
                     self.valid_moves.append([nx, ny])
             pass
