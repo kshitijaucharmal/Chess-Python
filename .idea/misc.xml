@@ -3,5 +3,5 @@
   <component name="Black">
     <option name="sdkName" value="uv (Chess-Python)" />
   </component>
-  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.14 (Chess-Python)" project-jdk-type="Python SDK" />
+  <component name="ProjectRootManager" version="2" project-jdk-name="uv (Chess-Python)" project-jdk-type="Python SDK" />
 </project>

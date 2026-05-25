@@ -19,6 +19,7 @@ FEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
 # Colors
 BACKGROUND = (38, 36, 33)
 MOVE_COLOR = (255, 255, 0, 90)
-VALID_COLOR = (0, 0, 0, 90)
+VALID_ATTACK_COLOR = (0, 0, 0, 50)
+VALID_EMPTY_COLOR = (0, 0, 0, 90)
 TRANSPARENT = (0, 0, 0, 0)
 # Constants ----------------------------------------

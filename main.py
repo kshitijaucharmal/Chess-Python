@@ -34,20 +34,20 @@ while run:
     time_delta = clock.tick(60) / 1000.0
     mouse_pos = pygame.mouse.get_pos()
 
+    # Required for events
+    x = mouse_pos[0] // TILE_SIZE
+    y = mouse_pos[1] // TILE_SIZE
+
+    inside_board = 0 <= x < 8 and 0 <= y < 8
+
+    if inside_board:
+        board.mousex = x
+        board.mousey = y
+
+    file = chr(x + ord('a'))
+    rank = str(8 - y)
+
     for event in pygame.event.get():
-        # Required for events
-        x = mouse_pos[0] // TILE_SIZE
-        y = mouse_pos[1] // TILE_SIZE
-
-        inside_board = 0 <= x < 8 and 0 <= y < 8
-        
-        if inside_board:
-            board.mousex = x
-            board.mousey = y
-
-        file = chr(x + ord('a'))
-        rank = str(8 - y)
-
         if event.type == pygame.QUIT:
             run = False
 

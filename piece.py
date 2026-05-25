@@ -14,22 +14,125 @@ class Piece:
         self.piece_name = None
         self.selected = False
         self.white = True
-        
+        self.loc = [1 + int(self.pos.x // TILE_SIZE), 8 - int(self.pos.y // TILE_SIZE)]
+
         self.valid_moves = []
         pass
     
     def calculate_valid_moves(self, board):
-        for i in range(8):
-            for j in range(8):
-                if not board.chessboard[i][j].initialized:
-                    self.valid_moves.append([i, j])
-        pass
+        if not self.initialized:
+            return
+        if self.piece_name[1] == 'p':
+            print("Pawn")
+            if self.piece_name[0] == 'w':
+                # White moves forward
+                move = [self.loc[0], self.loc[1]+1]
+                self.valid_moves.append(move)
+                pass
+            else:
+                move = [self.loc[0], self.loc[1]-1]
+                self.valid_moves.append(move)
+                pass
+        if self.piece_name[1] == 'b':
+            print("Bishop")
+            x, y = self.loc
+
+            directions = [
+                (1, 1), (-1, -1), (1, -1), (-1, 1),  # Diagonals
+            ]
+
+            for dx, dy in directions:
+                for i in range(1, 9):
+                    nx = x + (i * dx)
+                    ny = y + (i * dy)
+
+                    if 1 <= nx <= 8 and 1 <= ny <= 8:
+                        if board.chessboard[nx-1][8-ny].initialized:
+                            self.valid_moves.append([nx, ny])
+                            break
+                        self.valid_moves.append([nx, ny])
+        if self.piece_name[1] == 'k':
+            print("King")
+            x, y = self.loc
+
+            directions = [
+                (1, 1), (-1, -1), (1, -1), (-1, 1),  # Diagonals
+                (1, 0), (-1, 0), (0, 1), (0, -1)  # Straights (Horizontal & Vertical)
+            ]
+
+            for dx, dy in directions:
+                nx = x + dx
+                ny = y + dy
+
+                if 1 <= nx <= 8 and 1 <= ny <= 8:
+                    if board.chessboard[nx - 1][8 - ny].initialized:
+                        self.valid_moves.append([nx, ny])
+                        continue
+                    self.valid_moves.append([nx, ny])
+        if self.piece_name[1] == 'q':
+            print("Queen")
+            x, y = self.loc
+
+            directions = [
+                (1, 1), (-1, -1), (1, -1), (-1, 1),  # Diagonals
+                (1, 0), (-1, 0), (0, 1), (0, -1)  # Straights (Horizontal & Vertical)
+            ]
+
+            for dx, dy in directions:
+                for i in range(1, 9):
+                    nx = x + (i * dx)
+                    ny = y + (i * dy)
+
+                    if 1 <= nx <= 8 and 1 <= ny <= 8:
+                        if board.chessboard[nx-1][8-ny].initialized:
+                            self.valid_moves.append([nx, ny])
+                            break
+                        self.valid_moves.append([nx, ny])
+        if self.piece_name[1] == 'r':
+            print("Rook")
+            x, y = self.loc
+
+            directions = [
+                (1, 0), (-1, 0), (0, 1), (0, -1)  # Straights (Horizontal & Vertical)
+            ]
+
+            for dx, dy in directions:
+                for i in range(1, 9):
+                    nx = x + (i * dx)
+                    ny = y + (i * dy)
+
+                    if 1 <= nx <= 8 and 1 <= ny <= 8:
+                        if board.chessboard[nx-1][8-ny].initialized:
+                            self.valid_moves.append([nx, ny])
+                            break
+                        self.valid_moves.append([nx, ny])
+
+        if self.piece_name[1] == 'n':
+            print("Knight")
+            x, y = self.loc
+
+            directions = [
+                (1, 2), (1, -2), (-1, 2), (-1, -2),
+                (2, 1), (2, -1), (-2, 1), (-2, -1)
+            ]
+
+            for dx, dy in directions:
+                nx = x + dx
+                ny = y + dy
+
+                if 1 <= nx <= 8 and 1 <= ny <= 8:
+                    if board.chessboard[nx - 1][8 - ny].initialized:
+                        self.valid_moves.append([nx, ny])
+                        continue
+                    self.valid_moves.append([nx, ny])
+            pass
     
     def init(self, piece_name, x, y):
         self.initialized = True
         self.piece_name = piece_name
         self.piece_img = PIECE_IMAGES[self.piece_name]
         self.pos = pygame.Vector2(x, y)
+        self.loc = [1 + int(self.pos.x // TILE_SIZE), 8 - int(self.pos.y // TILE_SIZE)]
         self.old_pos = self.pos
 
         self.white = True if self.piece_name[0] == 'w' else False
@@ -43,6 +146,7 @@ class Piece:
         self.piece_img = None
         self.piece_name = None
         self.selected = False
+        self.loc = []
         pass
 
     def select(self):
@@ -63,6 +167,7 @@ class Piece:
         if self.unselect_jobs:
             # if not valid position
             self.pos = self.old_pos
+            self.loc = [1 + int(self.pos.x // TILE_SIZE), 8 - int(self.pos.y // TILE_SIZE)]
 
             # Done
             self.unselect_jobs = False

@@ -64,9 +64,24 @@ class BoardManager:
         
         if self.selected_piece:
             for move in self.selected_piece.valid_moves:
-                x = move[0] * TILE_SIZE + TILE_SIZE/2
-                y = move[1] * TILE_SIZE + TILE_SIZE/2
-                pygame.gfxdraw.filled_circle(self.valid_moves_overlay, int(x), int(y), int(TILE_SIZE//6), VALID_COLOR)
+                x = move[0]-1
+                y = 8-move[1]
+
+                if not self.chessboard[x][y].initialized:
+                    pygame.gfxdraw.filled_circle(self.valid_moves_overlay,
+                                                 int(x * TILE_SIZE + TILE_SIZE/2),
+                                                 int(y * TILE_SIZE + TILE_SIZE/2),
+                                                 int(TILE_SIZE//6),
+                                                 VALID_EMPTY_COLOR)
+                else:
+                    pygame.draw.circle(
+                        self.valid_moves_overlay,
+                        VALID_ATTACK_COLOR,
+                        (x * TILE_SIZE + TILE_SIZE/2, y * TILE_SIZE + TILE_SIZE/2),  # center of temp surface
+                        TILE_SIZE // 2,
+                        8
+                    )
+
         else:
             self.valid_moves_overlay.fill(TRANSPARENT)
         
@@ -90,6 +105,12 @@ class BoardManager:
         if self.selected_piece is not None:
             # Nothing on the square
             current = self.chessboard[self.mousex][self.mousey]
+
+            if [1+self.mousex, 8-self.mousey] not in self.selected_piece.valid_moves:
+                self.selected_piece.unselect()
+                self.selected_piece = None
+                return
+
             if not current.initialized and self.selected_piece.piece_name is not None:
                 self.last_square_pos = self.selected_piece.old_pos
 
