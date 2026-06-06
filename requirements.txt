@@ -2,3 +2,4 @@ numpy
 tqdm
 pygame-ce
 pygame_gui
+chess
